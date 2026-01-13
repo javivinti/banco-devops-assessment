@@ -18,6 +18,7 @@ This repository implements the requested **/DevOps** microservice and a local Ku
 ## Requirements (local)
 
 - Docker ( Docker Engine on Linux)
+
 - `make`
 - Linux/macOS terminal **or** Windows **WSL2** (recommended)
 
@@ -26,7 +27,9 @@ This repository implements the requested **/DevOps** microservice and a local Ku
 ### Installing requirements
 
 - **Docker**:
-  - https://docs.docker.com/get-docker/
+```bash
+curl -fsSL https://get.docker.com | sudo sh && sudo usermod -aG docker $USER
+```
 
 - **Make**:
   - Linux: usually available via package manager (e.g. `sudo apt install make`)
