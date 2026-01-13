@@ -24,5 +24,13 @@ jobs:
       - name: Static code revision (ruff)
         run: ruff check .
 
+      - name: Start API (background)
+        run: |
+          python -m app.main &
+          for i in {1..30}; do
+            curl -sSf http://localhost:8000/health && break || true
+            sleep 1
+          done
+
       - name: Tests (coverage)
         run: pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=term-missing
