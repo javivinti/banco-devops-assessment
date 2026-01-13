@@ -4,6 +4,7 @@ import jwt
 import time
 from fastapi.responses import PlainTextResponse
 import os
+import uuid
 
 
 API_KEY = os.getenv("API_KEY", "")
@@ -45,9 +46,11 @@ def devops_other_methods():
 
 @app.get("/token", response_class=PlainTextResponse)
 def generate_token():
+    now = int(time.time())
     payload = {
-        "iat": int(time.time()),
-        "exp": int(time.time()) + 120  
+        "iat": now,
+        "exp": now + 120,
+        "jti": str(uuid.uuid4())  # <-- UNIQUE per transaction
     }
     token = jwt.encode(payload, JWT_SECRET, algorithm="HS256")
     return token
