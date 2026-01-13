@@ -8,6 +8,11 @@ on:
 jobs:
   test-lint:
     runs-on: ubuntu-latest
+    env:
+      API_KEY: "2f5ae96c-b558-4c7b-a590-a501ae1c3f6c"
+      JWT_SECRET: "supersecret"
+      BASE_URL: "http://127.0.0.1:8000"
+
     steps:
       - uses: actions/checkout@v4
 
@@ -26,7 +31,6 @@ jobs:
 
       - name: Start API (background)
         run: |
-          set -e
           uvicorn app.main:app --host 127.0.0.1 --port 8000 > server.log 2>&1 &
           for i in {1..30}; do
             curl -sSf http://127.0.0.1:8000/token && break || true
