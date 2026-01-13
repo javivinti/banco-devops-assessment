@@ -146,11 +146,7 @@ export JWT="$(curl -s ${HOST}/token)"
 echo "$JWT"
 ```
 
-### 7) Test the required endpoint
 
-```bash
-make 
-```
 
 Expected output (example):
 
@@ -195,7 +191,7 @@ GitHub Actions workflow: `.github/workflows/ci.yml`
 Stages:
 - **Build**: `docker build`
 - **Test**: ruff + pytest with coverage
-- **Deploy** (main only): placeholder stage (ready to connect to AKS)
+- **Deploy (main only)**: placeholder stage, ready to be connected to a real Kubernetes environment (e.g. AKS).
 
 ## (Optional) Cloud deployment with Terraform (Azure)
 
@@ -206,3 +202,10 @@ If you want to extend this project to Azure:
 - Use `Service type: LoadBalancer` or an Ingress controller for external access
 
 > Terraform is optional for the assessment, but recommended as an enhancement.
+
+## Testing notes
+
+Some integration tests require the service to be running (API + Kubernetes).
+For this reason, CI executes unit and API-level tests only.
+Full end-to-end testing can be executed locally using `make up` followed by `make test`.
+
