@@ -8,19 +8,39 @@ This repository implements the requested **/DevOps** microservice and a local Ku
 - CI pipeline (build + lint + tests + coverage)
 
 ## Architecture
-- Nginx acts as the entry point and reverse proxy.
-- The microservice runs on Kubernetes with **2 replicas**.
-- Horizontal Pod Autoscaler (HPA) is enabled.
-- Traffic is distributed across replicas via Kubernetes Service.
+
+- Nginx acts as the entry point (**acting as a load balancer / reverse proxy**).
+- Traffic is distributed across **2+ replicas** of the microservice via Kubernetes Service.
+- HPA is enabled for dynamic scaling.
+
 
 
 ## Requirements (local)
 
-- Docker (Docker Desktop on Windows/Mac, or Docker Engine on Linux)
+- Docker ( Docker Engine on Linux)
 - `make`
 - Linux/macOS terminal **or** Windows **WSL2** (recommended)
 
 > Note: the `make up` script downloads `kubectl` and `kind` automatically into `.bin/` (local folder).
+
+### Installing requirements
+
+- **Docker**:
+  - https://docs.docker.com/get-docker/
+
+- **Make**:
+  - Linux: usually available via package manager (e.g. `sudo apt install make`)
+
+```bash
+sudo apt install make
+```
+
+  - macOS: `xcode-select --install`
+  - Windows (WSL2): `sudo apt install make`
+
+- **WSL2 (Windows only)**:
+  - https://learn.microsoft.com/windows/wsl/install
+
 
 ## Quick start (local Kubernetes with kind)
 
@@ -70,6 +90,76 @@ make test
 ```bash
 make down
 ```
+
+## Manual setup (without Make)
+
+If you prefer not to use `make`, the project can be executed manually with the following steps.
+
+### Installing Kubernetes tools (manual mode)
+
+If you run the project without `make`, you need to install `kubectl` and `kind` manually.
+
+- **kubectl**:
+  - https://kubernetes.io/docs/tasks/tools/
+
+  Example (Linux / WSL2):
+```bash
+ curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+ chmod +x kubectl
+ sudo mv kubectl /usr/local/bin/kubectl
+```
+ - **kind**:
+   -https://kind.sigs.k8s.io/docs/user/quick-start/
+
+    Example (Linux / WSL2):
+```bash
+   curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.23.0/kind-linux-amd64
+   chmod +x ./kind
+   sudo mv ./kind /usr/local/bin/kind
+```
+
+### 1) Build the Docker image
+```bash
+docker build -t banco-app:latest .
+```
+### 2 ) Create the kind cluster
+```bash
+kind create cluster --name banco-devops
+```
+### 3 ) Load the image into the cluster
+```bash
+kind load docker-image banco-app:latest --name banco-devops
+```
+### 4 ) Apply Kubernetes manifests
+```bash
+kubectl apply -f k8s/
+```
+### 5 ) Apply Kubernetes manifests
+```bash
+kubectl port-forward svc/nginx 8000:80
+```
+### 6) Open new cmdand  Get a JWT token
+
+```bash
+export HOST="http://localhost:8000"
+export JWT="$(curl -s ${HOST}/token)"
+echo "$JWT"
+```
+
+### 7) Test the required endpoint
+
+```bash
+make 
+```
+
+Expected output (example):
+
+```json
+{
+  "message": "Hello Juan Perez your message will be send"
+}
+```
+
 
 ## API details
 
