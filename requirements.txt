@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pyjwt
+pytest
+pytest-cov
+ruff
+httpx
+requests
