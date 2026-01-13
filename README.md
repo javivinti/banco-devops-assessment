@@ -7,6 +7,13 @@ This repository implements the requested **/DevOps** microservice and a local Ku
 - Kubernetes manifests with **2 replicas** + HPA
 - CI pipeline (build + lint + tests + coverage)
 
+## Architecture
+- Nginx acts as the entry point and reverse proxy.
+- The microservice runs on Kubernetes with **2 replicas**.
+- Horizontal Pod Autoscaler (HPA) is enabled.
+- Traffic is distributed across replicas via Kubernetes Service.
+
+
 ## Requirements (local)
 
 - Docker (Docker Desktop on Windows/Mac, or Docker Engine on Linux)
