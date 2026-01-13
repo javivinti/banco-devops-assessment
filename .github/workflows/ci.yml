@@ -19,18 +19,21 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install pytest pytest-cov ruff
+          pip install pytest pytest-cov ruff uvicorn
 
       - name: Static code revision (ruff)
         run: ruff check .
 
       - name: Start API (background)
         run: |
-          python -m app.main &
+          set -e
+          uvicorn app.main:app --host 127.0.0.1 --port 8000 > server.log 2>&1 &
           for i in {1..30}; do
-            curl -sSf http://localhost:8000/health && break || true
+            curl -sSf http://127.0.0.1:8000/token && break || true
             sleep 1
           done
+          echo "=== server.log ==="
+          tail -n 200 server.log
 
       - name: Tests (coverage)
         run: pytest -q --maxfail=1 --disable-warnings --cov=. --cov-report=term-missing
