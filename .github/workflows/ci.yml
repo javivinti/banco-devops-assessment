@@ -60,4 +60,4 @@ jobs:
     needs: [test]
     if: github.ref == 'refs/heads/main'
     steps:
-      - run: echo "Deploy stage placeholder: wire this to AKS (kubectl apply) once secrets are configured."
+      - run: echo "Deploy stage placeholder - wire this to AKS (kubectl apply) once secrets are configured."
